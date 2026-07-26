@@ -1,0 +1,33 @@
+services:
+  # Serviço do Servidor Web (PHP + Apache)
+  web:
+    build: .
+    container_name: portfolio_web
+    ports:
+      - "8080:80"
+    volumes:
+      # Mapeia todo o projeto para que o Apache veja a pasta public/ e o vendor/
+      - .:/var/www/html
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    depends_on:
+      - db
+
+  # Serviço do Banco de Dados (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: portfolio_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: portfolio_db
+      MYSQL_ROOT_PASSWORD: root_password_seguro
+      MYSQL_USER: portfolio_user
+      MYSQL_PASSWORD: user_password_seguro
+    volumes:
+      # Volume persistente para não perder os dados do banco ao desligar o container
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

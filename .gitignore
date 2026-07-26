@@ -1,0 +1,17 @@
+#arquivo de ambiente (senhas e credencias)
+.env
+.env.local
+
+
+#pasta de dependencias do composer cria localmente
+# (o servidor e outros programador vão gerar as suas próprias dependencias )
+/vendor/
+
+#arquivo do windows
+Thumbs.db
+desktop.ini
+
+# Editor e SO adicionais
+.vscode/
+.idea/
+.DS_Store
