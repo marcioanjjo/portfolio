@@ -15,3 +15,7 @@ desktop.ini
 .vscode/
 .idea/
 .DS_Store
+
+#arquivos que preciso saber o que cada linha faz.
+anotações.txt
+Router_gemini.php

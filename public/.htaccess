@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Impede o acesso direto a pastas ou arquivos que não existem
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Redireciona tudo para o index.php mantendo os parâmetros
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
