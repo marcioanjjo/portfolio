@@ -3,7 +3,7 @@
 
     use Exception;
 
-    class Views
+    class View
     {
         /**
      * Renderiza uma view injetando dados e envolvendo com layout padrão (header/footer)
