@@ -14,15 +14,15 @@ class Contact
     {
         $db = Connection::getConnection();
 
-        $sql = "INSERT INTO contatos (nome, email, whatapp, mensagem)
-                VALUE (:nome, :email, :whatapp, :mensagem)";
+        $sql = "INSERT INTO contatos (nome, email, whatsapp, mensagem)
+                VALUES (:nome, :email, :whatsapp, :mensagem)";
 
         $stmt = $db->prepare($sql);
 
         return $stmt->execute([
             ':nome' => htmlspecialchars(trim($data['nome'])),
             ':email' => filter_var(trim($data['email']), FILTER_SANITIZE_EMAIL),
-            ':whatapp' => htmlspecialchars(trim($data['whatapp'])),
+            ':whatsapp' => htmlspecialchars(trim($data['whatsapp'])),
             ':mensagem' => htmlspecialchars(trim($data['mensagem'])),
         ]);
     }

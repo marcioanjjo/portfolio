@@ -37,10 +37,43 @@ class HomeController
      */
     public function storeContact(): void
     {
-        session_start();
-        if ($_SESSION['REQUEST_METHOD'] == 'POST') {
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        //Trava de segurança: Se não for POST manda de volta para a home.
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location', '/');
             exit;
         }
+
+        $nome = $_POST['nome'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $whatsapp = $_POST['whatsapp'] ?? '';
+        $mensagem = $_POST['mensagem'] ?? '';
+
+        //Validação Básica dos campos obrigatórios
+        if (empty($nome) || empty($email) || empty($whatsapp) || empty($mensagem)) {
+            $_SESSION['erro'] = 'Por favor, preencha todos os campos obrigatórios.';
+            header('Location: /#contato');
+            exit;
+        }
+
+        $salvo = Contact::create([
+            'nome' => $nome,
+            'email' => $email,
+            'whatsapp' => $whatsapp,
+            'mensagem' => $mensagem
+        ]);
+
+        if ($salvo) {
+            $_SESSION['sucesso'] = 'Mensagem enviada com sucesso!';
+        } else {
+            $_SESSION['erro'] = 'Erro ao enviar mensagem. Tente novamente.';
+        }
+
+        header('Location: /#contato');
+        exit;
     }
 }
