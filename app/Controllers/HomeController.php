@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 use App\Models\Contact;
 use App\Models\Project;
+use App\Services\MailService;
 use App\View;
 
 class HomeController
@@ -14,11 +15,14 @@ class HomeController
      */
     public function index(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         // Busca os projetos para exibir como destaque na Home
         $projetos = Project::getAll();
 
         // Pega mensagem de sucesso/erro da sessão se existir
-        session_start();
         $mensagemSucesso = $_SESSION['sucesso'] ?? null;
         $mensagemErro = $_SESSION['erro'] ?? null;
         unset($_SESSION['sucesso'], $_SESSION['erro']);
@@ -44,14 +48,14 @@ class HomeController
 
         //Trava de segurança: Se não for POST manda de volta para a home.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location', '/');
+            header('Location: /');
             exit;
         }
 
-        $nome = $_POST['nome'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $whatsapp = $_POST['whatsapp'] ?? '';
-        $mensagem = $_POST['mensagem'] ?? '';
+        $nome = trim($_POST['nome'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $whatsapp = trim($_POST['whatsapp'] ?? '');
+        $mensagem = trim($_POST['mensagem'] ?? '');
 
         //Validação Básica dos campos obrigatórios
         if (empty($nome) || empty($email) || empty($whatsapp) || empty($mensagem)) {
@@ -60,15 +64,18 @@ class HomeController
             exit;
         }
 
-        $salvo = Contact::create([
+        $dadosContato = [
             'nome' => $nome,
             'email' => $email,
             'whatsapp' => $whatsapp,
             'mensagem' => $mensagem
-        ]);
+        ];
+
+        $salvo = Contact::create($dadosContato);
 
         if ($salvo) {
             $_SESSION['sucesso'] = 'Mensagem enviada com sucesso!';
+            MailService::sendBudgetNotification($dadosContato);
         } else {
             $_SESSION['erro'] = 'Erro ao enviar mensagem. Tente novamente.';
         }
