@@ -70,6 +70,7 @@
     <?php endif; ?>
 
     <form action="/contact" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Csrf::generate(); ?>">
         <div>
             <label style="display: block; font-weight: 600; margin-bottom: 0.3rem;">Nome Completo / Empresa:</label>
             <input type="text" name="nome" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px;">

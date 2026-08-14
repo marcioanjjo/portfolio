@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-
+use App\Helpers\Csrf;
 use App\Middleware\AuthMiddleware;
 use App\Models\Contact;
 use App\Models\Project;
@@ -43,6 +43,14 @@ class AdminController
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
+        }
+
+        // Validação do Token (CSRF) Vindo do Formulario.
+        $tokenEnviado = $_POST['csrf_token'] ?? null;
+        if (!Csrf::validate($tokenEnviado)) {
+            $_SESSION['login_erro'] = "Solicitação invalida ou explirada (CSRF). Tente Novamente.";
+            header('Location: /admin/login');
+            exit;
         }
 
         $email = trim($_POST['email'] ?? '');

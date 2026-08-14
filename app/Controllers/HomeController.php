@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-
+use App\Helpers\Csrf;
 use App\Models\Contact;
 use App\Models\Project;
 use App\Services\MailService;
@@ -45,6 +45,15 @@ class HomeController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        //Valida o toke CSRF enviado.
+        $tokenEnviado = $_POST['csrf_token'] ?? null;
+        if (!Csrf::validate($tokenEnviado)) {
+            $_SESSION['erro'] = "Solitação invalida ou expirada (CSRF) Tente novamente.";
+            header('Location: /#contato');
+            exit;
+        }
+
 
         //Trava de segurança: Se não for POST manda de volta para a home.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

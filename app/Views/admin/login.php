@@ -73,6 +73,7 @@ $title = $title ?? 'Acesso Administrativo';
         <?php endif; ?>
 
         <form action="/admin/login" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Csrf::generate(); ?>">
             <label>E-mail Corporativo:</label>
             <input type="email" name="email" required>
 
