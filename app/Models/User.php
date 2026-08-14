@@ -12,13 +12,13 @@ class User
      * bucas um usuário no banco de dados pelo email
      */
 
-    public static function getByEmail(string $email): ?User
+    public static function getByEmail(string $email): ?array
     {
         $db = Connection::getConnection();
 
         $sql = "SELECT id, nome, email, senha FROM usuarios WHERE email = :email LIMIT 1";
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(":email", $email);
+        $stmt->bindValue(":email", trim($email));
         $stmt->execute();
 
         $user = $stmt->fetch();
@@ -29,7 +29,7 @@ class User
     {
         $db = Connection::getConnection();
 
-        $sql = "INSERT INTO usuario(nome, email, senha) VALUES(:nome, :email, :senha)";
+        $sql = "INSERT INTO usuarios(nome, email, senha) VALUES(:nome, :email, :senha)";
         $smtp = $db->prepare($sql);
         $smtp->bindValue(":email", $email);
         $smtp->execute();

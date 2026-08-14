@@ -23,11 +23,11 @@ $router->post('/contact', [HomeController::class, 'storeContact']);
 $router->get('/portfolio', [ProjectController::class, 'index']);
 $router->get('/projeto/{id}', [ProjectController::class, 'show']);
 
-//Executa o roteamento da requisição atual
-$router->dispatch();
-
 //Rotas da áre administrativa
 $router->get('/admin/login', [AdminController::class, 'loginView']);
 $router->post('/admin/login', [AdminController::class, 'loginProcess']);
 $router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
 $router->get('/admin/logout', [AdminController::class, 'logout']);
+
+//Executa o roteamento da requisição atual
+$router->dispatch();
