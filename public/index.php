@@ -6,6 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Router;
 use App\Controllers\HomeController;
 use App\Controllers\ProjectController;
+use App\Controllers\AdminController;
 
 //Carregar as variáveis de ambiente do arquivo .env
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
@@ -24,3 +25,9 @@ $router->get('/projeto/{id}', [ProjectController::class, 'show']);
 
 //Executa o roteamento da requisição atual
 $router->dispatch();
+
+//Rotas da áre administrativa
+$router->get('/admin/login', [AdminController::class, 'loginView']);
+$router->post('/admin/login', [AdminController::class, 'loginProcess']);
+$router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
+$router->get('/admin/logout', [AdminController::class, 'logout']);
