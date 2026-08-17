@@ -1,6 +1,7 @@
 #arquivo de ambiente (senhas e credencias)
 .env
 .env.local
+dashboard_v1.0.php
 
 
 #pasta de dependencias do composer cria localmente

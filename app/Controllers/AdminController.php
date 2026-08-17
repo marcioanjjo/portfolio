@@ -14,7 +14,6 @@ class AdminController
     /**
      * Exibe a tela de Login do Painel.
      */
-
     public function loginView(): void
     {
         if (session_status()  === PHP_SESSION_NONE) {
@@ -80,27 +79,63 @@ class AdminController
 
 
     /**
-     * Dashboard principal: Visualiza solicitações de orçamento.
+     * Dashboard com suporte a filtro de status
      */
 
     public function dashboard(): void
     {
         AuthMiddleware::handle();
 
-        $db = \App\Connection::getConnection();
-        $stmt = $db->query("SELECT * FROM contatos ORDER BY criado_em DESC");
-        $contatos = $stmt->fetchAll();
+        $statusAtual = $_GET['status'] ?? 'pendente';
+        if (!in_array($statusAtual, ['pendente', 'concluido', 'arquivado'], true)) {
+            $statusAtual = 'pendente';
+        }
+
+        $contatos = Contact::getByStatus($statusAtual);
 
         View::render('admin/dashboard', [
             'title' => 'Dashboard | Painel SQL Tecnologia',
-            'contatos' => $contatos
+            'contatos' => $contatos,
+            'statusAtual' => $statusAtual,
+            'usuarioLogado' => $_SESSION['admin_user']['nome'] ?? 'Administrador'
         ]);
+    }
+
+    /**
+     * Altera o status do orçamento (Concluir / Reabrir / Arquivar)
+     */
+
+    public function changeContactStatus(): void
+    {
+        AuthMiddleware::handle();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/dashboard');
+            exit;
+        }
+
+        //Validação do Token CSRF.
+        if (!Csrf::validate($_POST['csrf_token'] ?? null)) {
+            header('Location: /admin/dashboard');
+            exit;
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        $novoStatus = $_POST['status'] ?? 'pendente';
+
+        if ($id > 0  && in_array($novoStatus, ['pendente', 'concluido', 'arquivado'], true)) {
+            Contact::updateStatus($id, $novoStatus);
+        }
+
+        // Redireciona mantendo na visualização correspondente
+        $origem = $_POST['redirect_status'] ?? 'pendente';
+        header("Location: /admin/dashboard?status={$origem}");
+        exit;
     }
 
     /**
      * Desloga o usuário da seção
      */
-
     public function logout(): void
     {
         if (session_status() === PHP_SESSION_NONE) {

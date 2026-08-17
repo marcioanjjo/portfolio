@@ -26,4 +26,36 @@ class Contact
             ':mensagem' => htmlspecialchars(trim($data['mensagem'])),
         ]);
     }
+
+    /**
+     * Busca os contatos pelos status de (Pendentes, concluidos e arquivados)
+     */
+
+    public static function getByStatus(string $status = 'pendentes'): array
+    {
+        $db = Connection::getConnection();
+
+        $sql = "SELECT * FROM contatos WHERE status = :status ORDER BY  criado_em DESC";
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':status', $status);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Atualiza status do um orçamento
+     */
+
+    public static function updateStatus(int $id, string $status): bool
+    {
+        $db = Connection::getConnection();
+        $sql = "UPDATE contatos SET status = :status WHERE id = :id";
+        $stmt = $db->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id,
+            ':status' => $status
+        ]);
+    }
 }
