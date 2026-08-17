@@ -92,11 +92,13 @@ class AdminController
         }
 
         $contatos = Contact::getByStatus($statusAtual);
+        $contadores = Contact::countByStatus();
 
         View::render('admin/dashboard', [
             'title' => 'Dashboard | Painel SQL Tecnologia',
             'contatos' => $contatos,
             'statusAtual' => $statusAtual,
+            'contadores' => $contadores,
             'usuarioLogado' => $_SESSION['admin_user']['nome'] ?? 'Administrador'
         ]);
     }

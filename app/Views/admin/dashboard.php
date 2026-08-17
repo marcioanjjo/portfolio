@@ -16,16 +16,25 @@ $statusAtual = $statusAtual ?? 'pendente';
         class="btn"
         style="background: <?= $statusAtual === 'pendente' ? '#0284c7' : '#94a3b8' ?>; padding: 0.4rem 1rem;">
         📥 Pendentes
+        <span style="background: rgba(0,0,0,0.25); color: #fff; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold;">
+            <?= $contadores['pendente'] ?? 0 ?>
+        </span>
     </a>
     <a href="/admin/dashboard?status=concluido"
         class="btn"
         style="background: <?= $statusAtual === 'concluido' ? '#16a34a' : '#94a3b8' ?>; padding: 0.4rem 1rem;">
         ✅ Concluídos
+        <span style="background: rgba(0,0,0,0.25); color: #fff; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold;">
+            <?= $contadores['concluido'] ?? 0 ?>
+        </span>
     </a>
     <a href="/admin/dashboard?status=arquivado"
         class="btn"
         style="background: <?= $statusAtual === 'arquivado' ? '#475569' : '#94a3b8' ?>; padding: 0.4rem 1rem;">
         🗄️ Arquivados
+        <span style="background: rgba(0,0,0,0.25); color: #fff; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold;">
+            <?= $contadores['arquivado'] ?? 0 ?>
+        </span>
     </a>
 </div>
 

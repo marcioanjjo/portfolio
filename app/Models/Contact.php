@@ -58,4 +58,18 @@ class Contact
             ':status' => $status
         ]);
     }
+
+    public static function countByStatus(): array
+    {
+        $db = Connection::getConnection();
+        $sql = "SELECT status, COUNT(*) as total FROM contatos GROUP BY status";
+        $stmt = $db->query($sql);
+        $linha = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        return [
+            'pendente' => (int)($linha['pendente'] ?? 0),
+            'concluido' => (int)($linha['concluido'] ?? 0),
+            'arquivado' => (int)($linha['arquivado'] ?? 0)
+        ];
+    }
 }
