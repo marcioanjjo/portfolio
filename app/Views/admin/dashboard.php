@@ -5,8 +5,9 @@ $statusAtual = $statusAtual ?? 'pendente';
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <h1>⚙️ Painel Administrativo</h1>
     <div style="display: flex; gap: 0.5rem;">
-        <a href="/" target="_blank" class="btn" style="background: #475569;">🌐 Ver Site</a>
-        <a href="/admin/logout" class="btn" style="background: #ef4444;">Sair</a>
+        <a href="/admin/projetos" class="btn" style="background: #0284c7; font-size: 0.9rem;">🚀 Gerenciar Projetos</a>
+        <a href="/" target="_blank" class="btn" style="background: #475569; font-size: 0.9rem;">🌐 Ver Site</a>
+        <a href="/admin/logout" class="btn" style="background: #ef4444; font-size: 0.9rem;">Sair</a>
     </div>
 </div>
 

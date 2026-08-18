@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Helpers\Csrf;
 use App\Middleware\AuthMiddleware;
+use App\Helpers\Upload;
 use App\Models\Contact;
 use App\Models\Project;
 use App\Models\User;
@@ -37,7 +38,6 @@ class AdminController
     /**
      * Processa o formúlaro de login
      */
-
     public function loginProcess(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -81,7 +81,6 @@ class AdminController
     /**
      * Dashboard com suporte a filtro de status
      */
-
     public function dashboard(): void
     {
         AuthMiddleware::handle();
@@ -106,7 +105,6 @@ class AdminController
     /**
      * Altera o status do orçamento (Concluir / Reabrir / Arquivar)
      */
-
     public function changeContactStatus(): void
     {
         AuthMiddleware::handle();
@@ -148,6 +146,90 @@ class AdminController
         session_destroy();
 
         header('Location: /admin/login');
+        exit;
+    }
+
+    /**
+     * Exibe a pagina com a lista e o formulário de cadastro de projetos.
+     */
+    public static function projects(): void
+    {
+        AuthMiddleware::handle();
+
+        $projetos = Project::getAll();
+
+        $sucesso = $_SESSION['proj_sucesso'] ?? null;
+        $erro = $_SESSION['proj_erro'] ?? null;
+        unset($_SESSION['proj_sucesso'], $_SESSION['proj_erro']);
+
+        View::render('admin/projects', [
+            'title' => 'Gerencia Projetos \ SQL  Tecnologiga',
+            'projetos' => $projetos,
+            'sucesso' => $sucesso,
+            'erro' => $erro,
+            'usuarioLogado' => $_SESSION['admin_user']['admin unser']['nome'] ?? 'Administrador'
+        ]);
+    }
+
+    /**
+     * Processa cadastro de um novo projeto via POST.
+     */
+    public static function storeProject(): void
+    {
+        AuthMiddleware::handle();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/projetos');
+            exit;
+        }
+
+        if (!Csrf::validate($_POST['csrf_token'] ?? null)) {
+            $_SESSION['proj_erro'] = "Token CSRF invalido ou expirado.";
+            header('Location: /admin/projetos');
+            exit;
+        }
+
+        $titulo             = trim($_POST['titulo'] ?? '');
+        $descricaoCurta     = trim($_POST['descricao_curta'] ?? '');
+        $descricaoCompleta  = trim($_POST['descriicao_completa'] ?? '');
+        $linkDemo           = trim($_POST['link_demo'] ?? '');
+        $linkGitHub         = trim($_POST['link_github'] ?? '');
+        $tipoServidor       = trim($_POST['tipo_servidor'] ?? '');
+
+        if (empty($titulo) || empty($descricaoCurta)) {
+            $_SESSION['proje_erro'] = "Titulo e Descrão são campos obrigatórios.";
+            header('Location: /admin/projetos');
+            exit;
+        }
+
+        // Processa o upload através do Helper
+        $imagemEnviada = null;
+        if (!empty($_FILE['imagem_arquivo'])) {
+            $imagemEnviada = Upload::image($_FILE['image_arquivo'], 'projetos');
+        }
+
+        //Se o upload não foi enviado ou falhou usar imagem padrão.
+        $imagemCapa = $imagemEnviada ?: '/assets/img/project-default.png';
+
+
+        $salvo = Project::create([
+            'titulo'             => $titulo,
+            'descricao_curta'    => $descricaoCurta,
+            'descricao_completa' => $descricaoCompleta,
+            'link_demo'          => $linkDemo,
+            'link_github'        => $linkGitHub,
+            'tipo_servidor'      => $tipoServidor,
+            'imagem_capa'         => $imagemCapa
+
+        ]);
+
+        if ($salvo) {
+            $_SESSION['proj_sucesso'] = "Projetos cadastrado com sucesso.";
+        } else {
+            $_SESSION['proje_erro'] = "Erro ao cadastrar projeto no banco.";
+        }
+
+        header('Location: /admin/projetos');
         exit;
     }
 }

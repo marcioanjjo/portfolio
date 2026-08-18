@@ -29,6 +29,8 @@ $router->post('/admin/login', [AdminController::class, 'loginProcess']);
 $router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
 $router->get('/admin/logout', [AdminController::class, 'logout']);
 $router->post('/admin/contato/status', [AdminController::class, 'changeContactStatus']);
+$router->get('/admin/projetos', [AdminController::class, 'projects']);
+$router->post('/admin/projetos', [AdminController::class, 'storeProject']);
 
 //Executa o roteamento da requisição atual
 $router->dispatch();
