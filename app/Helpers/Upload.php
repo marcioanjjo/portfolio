@@ -31,6 +31,7 @@ class Upload
         $caminhoCompleto = $diretorioDestino . $nomeArquivo;
 
         if (move_uploaded_file($file['tmp_name'], $caminhoCompleto)) {
+            chmod($caminhoCompleto, 0666);
             return '/assets/img/' . trim($subPasta, '/') . '/' . $nomeArquivo;
         }
         return null;

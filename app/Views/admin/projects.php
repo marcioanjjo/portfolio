@@ -13,15 +13,23 @@
     </div>
 </div>
 
-<?php if (!empty($sucesso)): ?>
+<?php if (isset($project_sucesso) && !empty($project_sucesso)): ?>
     <div style="background: #dcfce7; color: #166534; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem;">
-        <?= htmlspecialchars($sucesso) ?>
+        <?= htmlspecialchars((string) $project_sucesso) ?>
+    </div>
+<?php elseif (isset($sucesso) && !empty($sucesso)): ?>
+    <div style="background: #dcfce7; color: #166534; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem;">
+        <?= htmlspecialchars((string) $sucesso) ?>
     </div>
 <?php endif; ?>
 
-<?php if (!empty($erro)): ?>
+<?php if (isset($project_erro) && !empty($project_erro)): ?>
     <div style="background: #fee2e2; color: #991b1b; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem;">
-        <?= htmlspecialchars($erro) ?>
+        <?= htmlspecialchars((string) $project_erro) ?>
+    </div>
+<?php elseif (isset($erro) && !empty($erro)): ?>
+    <div style="background: #fee2e2; color: #991b1b; padding: 0.8rem; border-radius: 6px; margin-bottom: 1.5rem;">
+        <?= htmlspecialchars((string) $erro) ?>
     </div>
 <?php endif; ?>
 
@@ -29,7 +37,7 @@
 <div class="card" style="margin-bottom: 2.5rem; border-top: 4px solid #0284c7;">
     <h2 style="margin-top: 0; color: #0f172a;">➕ Cadastrar Novo Projeto</h2>
 
-    <form action="/admin/projetos" method="POST" enctype="multipart/form-data style=" display: grid; gap: 1.2rem; margin-top: 1rem;">
+    <form action="/admin/projetos" method="POST" enctype="multipart/form-data" style="display: grid; gap: 1.2rem; margin-top: 1rem;">
         <input type="hidden" name="csrf_token" value="<?= \App\Helpers\Csrf::generate(); ?>">
 
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
@@ -55,9 +63,23 @@
         </div>
 
         <div>
-            <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">URL ou Caminho da Imagem de Capa</label>
-            <input type="file" name="imagem_arquivo" placeholder="Nome do Arquivo(Print)" style="width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid #cbd5e1;">
+            <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Print / Imagem de Capa do Projeto</label>
+            <input type="file" name="imagem_arquivo" accept="image/png, image/jpeg, image/webp" style="width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff;">
         </div>
+
+        <?php if (!empty($tecnologias)): ?>
+            <div>
+                <label style="font-weight: 600; display: block; margin-bottom: 0.4rem;">Tecnologias Utilizadas:</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; background: #f8fafc; padding: 0.8rem; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <?php foreach ($tecnologias as $tech): ?>
+                        <label style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; cursor: pointer; color: #334155;">
+                            <input type="checkbox" name="tecnologias[]" value="<?= $tech['id'] ?>">
+                            <?= htmlspecialchars($tech['nome']) ?>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div>
             <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Descrição Curta (Exibida no Card da Home) *</label>
@@ -107,7 +129,5 @@
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php else: ?>
     <?php endif; ?>
-
 </div>

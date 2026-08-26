@@ -157,16 +157,18 @@ class AdminController
         AuthMiddleware::handle();
 
         $projetos = Project::getAll();
+        $tecnologias = Project::getAllTechnologies();
 
         $sucesso = $_SESSION['proj_sucesso'] ?? null;
         $erro = $_SESSION['proj_erro'] ?? null;
         unset($_SESSION['proj_sucesso'], $_SESSION['proj_erro']);
 
         View::render('admin/projects', [
-            'title' => 'Gerencia Projetos \ SQL  Tecnologiga',
-            'projetos' => $projetos,
-            'sucesso' => $sucesso,
-            'erro' => $erro,
+            'title'         => 'Gerencia Projetos \ SQL  Tecnologia',
+            'projetos'      => $projetos,
+            'tecnologias'   => $tecnologias,
+            'sucesso'       => $sucesso,
+            'erro'          => $erro,
             'usuarioLogado' => $_SESSION['admin_user']['admin unser']['nome'] ?? 'Administrador'
         ]);
     }
@@ -191,10 +193,11 @@ class AdminController
 
         $titulo             = trim($_POST['titulo'] ?? '');
         $descricaoCurta     = trim($_POST['descricao_curta'] ?? '');
-        $descricaoCompleta  = trim($_POST['descriicao_completa'] ?? '');
+        $descricaoCompleta  = trim($_POST['descricao_completa'] ?? '');
         $linkDemo           = trim($_POST['link_demo'] ?? '');
         $linkGitHub         = trim($_POST['link_github'] ?? '');
         $tipoServidor       = trim($_POST['tipo_servidor'] ?? '');
+
 
         if (empty($titulo) || empty($descricaoCurta)) {
             $_SESSION['proje_erro'] = "Titulo e Descrão são campos obrigatórios.";
@@ -204,13 +207,12 @@ class AdminController
 
         // Processa o upload através do Helper
         $imagemEnviada = null;
-        if (!empty($_FILE['imagem_arquivo'])) {
-            $imagemEnviada = Upload::image($_FILE['image_arquivo'], 'projetos');
+        if (!empty($_FILES['imagem_arquivo']['name'])) {
+            $imagemEnviada = Upload::image($_FILES['imagem_arquivo'], 'projetos');
         }
 
         //Se o upload não foi enviado ou falhou usar imagem padrão.
-        $imagemCapa = $imagemEnviada ?: '/assets/img/project-default.png';
-
+        $imagemCapa = $imagemEnviada ?: '/assets/img/project-default.svg';
 
         $salvo = Project::create([
             'titulo'             => $titulo,
@@ -223,7 +225,11 @@ class AdminController
 
         ]);
 
-        if ($salvo) {
+        if ($salvo > 0) {
+            $techsSelecionada = $_Get['tecnologias'] ?? [];
+            if (!empty($techsSelecionada)) {
+                Project::syncTechnologies($salvo, $techsSelecionada);
+            }
             $_SESSION['proj_sucesso'] = "Projetos cadastrado com sucesso.";
         } else {
             $_SESSION['proje_erro'] = "Erro ao cadastrar projeto no banco.";
