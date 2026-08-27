@@ -165,10 +165,8 @@ Acesse no navegador:
 Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes.
 
 ## 👨‍💻 Autor
-Desenvolvido por Marcio dos Anjos Silva
 
-Empresa: SQL Tecnologia
-
-LinkedIn: www.linkedin.com/in/marciosilva59543029
-
-GitHub: https://github.com/marcioanjjo
+Desenvolvido por **Marcio dos Anjos Silva**  
+**Empresa:** SQL Tecnologia  
+**LinkedIn:** [linkedin.com/in/marciosilva59543029](https://www.linkedin.com/in/marciosilvasqltecnologia)  
+**GitHub:** [github.com/marcioanjjo](https://github.com/marcioanjjo)
