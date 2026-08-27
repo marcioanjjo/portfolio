@@ -160,6 +160,10 @@ Acesse no navegador:
 
 * Painel Administrativo: https://seu-dominio.com/admin/login
 
+## Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes.
+
 ## 👨‍💻 Autor
 Desenvolvido por Marcio dos Anjos Silva
 
